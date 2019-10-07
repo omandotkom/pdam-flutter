@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
   @override
@@ -25,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
       tag: 'hero',
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
-        radius: 48.0,
+        radius: 90.0,
         child: Image.asset('graphics/logopdam.png'),
       ),
     );
@@ -67,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () {
             //Navigator.of(context).pushNamed(HomePage.tag);
             //fetchPost();
-          login();
+            login();
           },
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
@@ -80,9 +81,9 @@ class _LoginPageState extends State<LoginPage> {
         'Forgot password?',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: (){
+      onPressed: () {
         login();
-      } ,
+      },
     );
 
     return Scaffold(
@@ -105,7 +106,8 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-  void login(){
+
+  void login() {
     //show loading dialog
     pr = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
@@ -121,20 +123,21 @@ class _LoginPageState extends State<LoginPage> {
     );
     pr.show();
 
-    fetchPost().then((val){
-      if (pr.isShowing()){
+    fetchPost().then((val) {
+      if (pr.isShowing()) {
         pr.dismiss();
       }
       Fluttertoast.showToast(
-          msg: "Sealamt datang " + val.userId,
+          msg: "Selamat datang " + val.userId,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           backgroundColor: Colors.transparent,
           textColor: Colors.black,
-          fontSize: 12.0
-      );
+          fontSize: 12.0);
+      Navigator.of(context).pushNamed(HomePage.tag);
       //then simpan ke save storage
-    }).catchError((onError){
+    }).catchError((onError) {
+      print(onError.toString());
       pr.dismiss();
       var alertStyle = AlertStyle(
         animationType: AnimationType.shrink,
@@ -157,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
         type: AlertType.error,
         style: alertStyle,
         title: "Login Gagal",
-        desc :  onError.toString(),
+        desc: "Username atau password salah",
         buttons: [
           DialogButton(
             child: Text(
@@ -169,23 +172,27 @@ class _LoginPageState extends State<LoginPage> {
           )
         ],
       ).show();
-
     });
   }
 
   Future<User> fetchPost() async {
-
     var response = await http.post(ALLURL.loginURL,
         body: {'id': idController.text, 'password': passController.text});
 
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
+      print(response);
       return User.fromJson(json.decode(response.body));
+      pr.dismiss();
     } else if (response.statusCode == 401) {
-  return Future.error("Username atau password anda salah");
-      throw("Username atau password Anda salah, silahkan diperiksa kembali.");
+      //throw Exception("Username atau password anda salah");
+      return Future.error("Username atau password anda salah");
+      //  pr.dismiss();
+      throw ("Username atau password Anda salah, silahkan diperiksa kembali.");
       //throw Exception('Failed to load post');
     } else {
+      // pr.dismiss();
+      //throw Exception("Tidak tersambung ke server");
       return Future.error("Gagal tersambung ke server");
     }
   }
