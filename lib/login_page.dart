@@ -66,7 +66,8 @@ class _LoginPageState extends State<LoginPage> {
           height: 42.0,
           onPressed: () {
             //Navigator.of(context).pushNamed(HomePage.tag);
-            fetchPost();
+            //fetchPost();
+          login();
           },
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
@@ -134,6 +135,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       //then simpan ke save storage
     }).catchError((onError){
+      pr.dismiss();
       var alertStyle = AlertStyle(
         animationType: AnimationType.shrink,
         isCloseButton: true,
@@ -181,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
       return User.fromJson(json.decode(response.body));
     } else if (response.statusCode == 401) {
   return Future.error("Username atau password anda salah");
-      //throw("Username atau password Anda salah, silahkan diperiksa kembali.");
+      throw("Username atau password Anda salah, silahkan diperiksa kembali.");
       //throw Exception('Failed to load post');
     } else {
       return Future.error("Gagal tersambung ke server");
