@@ -128,13 +128,6 @@ class _LoginPageState extends State<LoginPage> {
       if (pr.isShowing()) {
         pr.dismiss();
       }
-      Fluttertoast.showToast(
-          msg: "Selamat datang " + val.userId,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.transparent,
-          textColor: Colors.black,
-          fontSize: 12.0);
       Navigator.of(context).pushNamed(HomePage.tag);
       //then simpan ke save storage
     }).catchError((onError) {
