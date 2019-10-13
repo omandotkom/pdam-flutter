@@ -28,25 +28,31 @@ class HomePage extends StatelessWidget {
           crossAxisCount: 1,
           // Generate 100 widgets that display their index in the List.
           children: <Widget>[
-            Container(
-                padding: new EdgeInsets.all(10),
-                decoration: boxDecoration(),
-                margin: new EdgeInsets.all(20),
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.contain, // otherwise the logo will be tiny
-                        child:
-                            Icon(Icons.create, color: Colors.lightBlueAccent),
+            GestureDetector(
+              onTap: (){
+                print("lihat data clicked");
+              },
+              child:  Container(
+                  padding: new EdgeInsets.all(10),
+                  decoration: boxDecoration(),
+                  margin: new EdgeInsets.all(20),
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.contain, // otherwise the logo will be tiny
+                          child:
+                          Icon(Icons.create, color: Colors.lightBlueAccent),
+                        ),
                       ),
-                    ),
-                    Text('Tambah Data'),
-                    Text('sample deskripsi untuk mendambahkan data',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12)),
-                  ],
-                )),
+                      Text('Tambah Data'),
+                      Text('sample deskripsi untuk mendambahkan data',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 12)),
+                    ],
+                  )),
+            ),
+
             Container(
                 decoration: boxDecoration(),
                 padding: new EdgeInsets.all(10),

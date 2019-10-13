@@ -1,13 +1,14 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:pdam/User.dart';
 import 'package:pdam/home_page.dart';
-import 'ALLURL.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:pdam/Database.dart';
+
+import 'package:pdam/pojo/User.dart';
+
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -16,14 +17,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final idController = TextEditingController();
-  final passController = TextEditingController();
+  final idController = TextEditingController(text: "uer1");
+  final passController = TextEditingController(text: "system3298");
   ProgressDialog pr;
 
   @override
   Widget build(BuildContext context) {
+    DBProvider db = new DBProvider();
+    db.initDB();
     final logo = Hero(
-      tag: 'hero',
+      tag: 'pdam',
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         radius: 90.0,
@@ -68,7 +71,47 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () {
             //Navigator.of(context).pushNamed(HomePage.tag);
             //fetchPost();
-            login();
+
+              DBProvider dbProvider = DBProvider();
+              dbProvider
+                  .login(User(
+                      id: idController.text, password: passController.text))
+                  .then((val) {
+                Navigator.of(context).pushNamed(HomePage.tag);
+              }).catchError((onError) {
+                var alertStyle = AlertStyle(
+                  animationType: AnimationType.fromTop,
+
+                  isCloseButton: false,
+                  isOverlayTapDismiss: false,
+                  descStyle: TextStyle(fontWeight: FontWeight.bold),
+                  animationDuration: Duration(milliseconds: 400),
+                  alertBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  titleStyle: TextStyle(
+                    color: Colors.black45,
+                  ),
+                );
+                Alert(
+                  context: context,
+                  style: alertStyle,
+                  type: AlertType.error,
+                  title: "Gagal Login",
+                  desc: onError.toString(),
+                  buttons: [
+                    DialogButton(
+                      color: Colors.deepOrange,
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Tutup",style: TextStyle(fontSize: 20, color: Colors.black45)),
+                    )
+                  ]
+                ).show();
+              });
+
           },
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
@@ -81,9 +124,7 @@ class _LoginPageState extends State<LoginPage> {
         'Forgot password?',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {
-        login();
-      },
+      onPressed: () {},
     );
 
     return Scaffold(
@@ -106,88 +147,5 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-
-  void login() {
-    //show loading dialog
-    pr = new ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
-    pr.style(
-      message: 'Memproses...',
-      borderRadius: 10.0,
-      backgroundColor: Colors.white,
-      progressWidget: CircularProgressIndicator(),
-      elevation: 10.0,
-      insetAnimCurve: Curves.bounceIn,
-      progressTextStyle: TextStyle(
-          color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.w400),
-    );
-    pr.show();
-
-    fetchPost().then((val) {
-      if (pr.isShowing()) {
-        pr.dismiss();
-      }
-      Navigator.of(context).pushNamed(HomePage.tag);
-      //then simpan ke save storage
-    }).catchError((onError) {
-      print(onError.toString());
-      pr.dismiss();
-      var alertStyle = AlertStyle(
-        animationType: AnimationType.shrink,
-        isCloseButton: true,
-        isOverlayTapDismiss: false,
-        descStyle: TextStyle(fontWeight: FontWeight.bold),
-        animationDuration: Duration(milliseconds: 400),
-        alertBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
-          side: BorderSide(
-            color: Colors.grey,
-          ),
-        ),
-        titleStyle: TextStyle(
-          color: Colors.red,
-        ),
-      );
-      Alert(
-        context: context,
-        type: AlertType.error,
-        style: alertStyle,
-        title: "Login Gagal",
-        desc: "Username atau password salah",
-        buttons: [
-          DialogButton(
-            child: Text(
-              "Tutup",
-              style: TextStyle(color: Colors.white, fontSize: 13),
-            ),
-            onPressed: () => Navigator.pop(context),
-            width: 120,
-          )
-        ],
-      ).show();
-    });
-  }
-
-  Future<User> fetchPost() async {
-    var response = await http.post(ALLURL.loginURL,
-        body: {'id': idController.text, 'password': passController.text});
-
-    if (response.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      print(response);
-      return User.fromJson(json.decode(response.body));
-      pr.dismiss();
-    } else if (response.statusCode == 401) {
-      //throw Exception("Username atau password anda salah");
-      return Future.error("Username atau password anda salah");
-      //  pr.dismiss();
-      throw ("Username atau password Anda salah, silahkan diperiksa kembali.");
-      //throw Exception('Failed to load post');
-    } else {
-      // pr.dismiss();
-      //throw Exception("Tidak tersambung ke server");
-      return Future.error("Gagal tersambung ke server");
-    }
   }
 }
