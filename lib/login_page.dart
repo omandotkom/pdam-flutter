@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                   isCloseButton: false,
                   isOverlayTapDismiss: false,
                   descStyle: TextStyle(fontWeight: FontWeight.bold),
-                  animationDuration: Duration(milliseconds: 400),
+                  animationDuration: Duration(milliseconds: 800),
                   alertBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                     side: BorderSide(
@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                     DialogButton(
                       color: Colors.deepOrange,
                       onPressed: () => Navigator.pop(context),
-                      child: Text("Tutup",style: TextStyle(fontSize: 20, color: Colors.black45)),
+                      child: Text("Tutup",style: TextStyle(fontSize: 20, color: Colors.white)),
                     )
                   ]
                 ).show();

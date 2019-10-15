@@ -4,10 +4,8 @@ import 'package:flutter/rendering.dart';
 class HomePage extends StatelessWidget {
   static String tag = "home_page";
   @override
-  static const String _title = 'Flutter Code Sample';
-
   Widget build(BuildContext context) {
-    final title = 'Grid List';
+    final title = 'Home';
     var mediaQueryData = MediaQuery.of(context);
     final double widthScreen = mediaQueryData.size.width;
     final double appBarHeight = kToolbarHeight;
