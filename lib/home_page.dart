@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:pdam/input_page.dart';
+import 'package:pdam/pojo/User.dart';
 
 class HomePage extends StatelessWidget {
   static String tag = "home_page";
+  final User user;
+  HomePage({this.user});
   @override
   Widget build(BuildContext context) {
     final title = 'Home';
@@ -28,7 +32,10 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             GestureDetector(
               onTap: (){
-                print("lihat data clicked");
+                  Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => InputPage(user: user,)),
+              );
               },
               child:  Container(
                   padding: new EdgeInsets.all(10),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:pdam/home_page.dart';
 
@@ -9,15 +8,16 @@ import 'package:pdam/Database.dart';
 
 import 'package:pdam/pojo/User.dart';
 
-
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
   @override
   _LoginPageState createState() => new _LoginPageState();
 }
 
+User user;
+
 class _LoginPageState extends State<LoginPage> {
-  final idController = TextEditingController(text: "uer1");
+  final idController = TextEditingController(text: "user1");
   final passController = TextEditingController(text: "system3298");
   ProgressDialog pr;
 
@@ -72,31 +72,35 @@ class _LoginPageState extends State<LoginPage> {
             //Navigator.of(context).pushNamed(HomePage.tag);
             //fetchPost();
 
-              DBProvider dbProvider = DBProvider();
-              dbProvider
-                  .login(User(
-                      id: idController.text, password: passController.text))
-                  .then((val) {
-                Navigator.of(context).pushNamed(HomePage.tag);
-              }).catchError((onError) {
-                var alertStyle = AlertStyle(
-                  animationType: AnimationType.fromTop,
-
-                  isCloseButton: false,
-                  isOverlayTapDismiss: false,
-                  descStyle: TextStyle(fontWeight: FontWeight.bold),
-                  animationDuration: Duration(milliseconds: 800),
-                  alertBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(
-                      color: Colors.grey,
-                    ),
+            DBProvider dbProvider = DBProvider();
+            dbProvider
+                .login(user =
+                    User(id: idController.text, password: passController.text))
+                .then((val) {
+              //buat ganti halaman
+              // Navigator.of(context).pushNamed(HomePage.tag);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage(user: val,)),
+              );
+            }).catchError((onError) {
+              var alertStyle = AlertStyle(
+                animationType: AnimationType.fromTop,
+                isCloseButton: false,
+                isOverlayTapDismiss: false,
+                descStyle: TextStyle(fontWeight: FontWeight.bold),
+                animationDuration: Duration(milliseconds: 800),
+                alertBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(
+                    color: Colors.grey,
                   ),
-                  titleStyle: TextStyle(
-                    color: Colors.black45,
-                  ),
-                );
-                Alert(
+                ),
+                titleStyle: TextStyle(
+                  color: Colors.black45,
+                ),
+              );
+              Alert(
                   context: context,
                   style: alertStyle,
                   type: AlertType.error,
@@ -106,12 +110,11 @@ class _LoginPageState extends State<LoginPage> {
                     DialogButton(
                       color: Colors.deepOrange,
                       onPressed: () => Navigator.pop(context),
-                      child: Text("Tutup",style: TextStyle(fontSize: 20, color: Colors.white)),
+                      child: Text("Tutup",
+                          style: TextStyle(fontSize: 20, color: Colors.white)),
                     )
-                  ]
-                ).show();
-              });
-
+                  ]).show();
+            });
           },
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
@@ -121,10 +124,14 @@ class _LoginPageState extends State<LoginPage> {
 
     final forgotLabel = FlatButton(
       child: Text(
-        'Forgot password?',
+        'Daftarkan Pengguna',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {},
+      onPressed: () {
+         DBProvider db = new DBProvider();
+         db.newClient(User(id: "user1",
+         password : "system3298"));
+      },
     );
 
     return Scaffold(

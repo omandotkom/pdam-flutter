@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.lightBlue,
         fontFamily: 'Nunito',
       ),
-      home: InputPage(),
+      home: LoginPage(),
       routes: routes,
     );
   }

@@ -1,24 +1,83 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:pdam/Database.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pdam/pojo/User.dart';
+import 'package:pdam/pojo/Data.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flushbar/flushbar.dart';
 
-class InputPage extends StatelessWidget {
+class InputPage extends StatefulWidget {
+  final User user;
+  InputPage({this.user});
   static String tag = "input_page";
+  @override
+  StatefulInputPage createState() => StatefulInputPage(user: user);
+}
 
-  var _context;
-  Future getImage(ImageSource img) async {
+class StatefulInputPage extends State<InputPage> {
+  final TextEditingController idController = TextEditingController();
+  final TextEditingController ftRumahController = TextEditingController();
+  final TextEditingController ftBAController = TextEditingController();
+  final TextEditingController ftMeteranController = TextEditingController();
+  final TextEditingController namaLengkapController = TextEditingController();
+  final TextEditingController notelpController = TextEditingController();
+  final TextEditingController alamatController = TextEditingController();
+  final TextEditingController namaWM = TextEditingController();
+  final User user;
+  StatefulInputPage({this.user});
+  File _imageRumah, _imageBA, _imageMeteran;
+  Future getImageRumah(ImageSource img) async {
     var image = await ImagePicker.pickImage(source: img);
-
-    return image;
+    setState(() {
+      _imageRumah = image;
+      if (_imageRumah != null) ftRumahController.text = "R" + idController.text;
+    });
   }
 
-  FocusNode myFocusNode;
+  Future getImageBA(ImageSource img) async {
+    var image = await ImagePicker.pickImage(source: img);
+    setState(() {
+      _imageBA = image;
+      if (_imageBA != null) ftBAController.text = "BA" + idController.text;
+    });
+  }
 
-  var idController = TextEditingController();
+  Future getImageMeteran(ImageSource img) async {
+    var image = await ImagePicker.pickImage(source: img);
+    setState(() {
+      _imageMeteran = image;
+      if (_imageMeteran != null)
+        ftMeteranController.text = "Foto meteran berhasil diambil.";
+    });
+  }
+
+  void ambilGambar(String x, ImageSource ims) {
+    switch (x) {
+      case "RUMAH":
+        {
+          getImageRumah(ims);
+        }
+        break;
+      case "BA":
+        {
+          getImageBA(ims);
+        }
+        break;
+      case "METERAN":
+        {
+          getImageMeteran(ims);
+        }
+        break;
+    }
+  }
+
+  var _context;
   @override
   Widget build(BuildContext context) {
-    myFocusNode = FocusNode();
     final title = 'Grid List';
     _context = context;
     final String RUMAH = "RUMAH";
@@ -44,11 +103,10 @@ class InputPage extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          padding: const EdgeInsets.only(left: 9.0),
+          padding: const EdgeInsets.only(left: 9.0, bottom: 10.0),
           child: Column(
             children: <Widget>[
               TextFormField(
-                autofocus: true,
                 keyboardType: TextInputType.numberWithOptions(decimal: false),
                 autocorrect: false,
                 controller: idController,
@@ -67,6 +125,7 @@ class InputPage extends StatelessWidget {
               ),
               TextFormField(
                 autocorrect: false,
+                controller: namaLengkapController,
                 decoration: InputDecoration(
                     hintText: "Miftahul Pangestu",
                     hintStyle: TextStyle(fontSize: 12),
@@ -81,6 +140,7 @@ class InputPage extends StatelessWidget {
               ),
               TextFormField(
                 autocorrect: false,
+                controller: alamatController,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
@@ -97,7 +157,7 @@ class InputPage extends StatelessWidget {
               ),
               TextFormField(
                 autocorrect: false,
-
+                controller: notelpController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     hintText: "021 9635575",
@@ -114,6 +174,7 @@ class InputPage extends StatelessWidget {
               TextFormField(
                 autocorrect: false,
                 keyboardType: TextInputType.text,
+                controller: namaWM,
                 decoration: InputDecoration(
                     hintText: "03312",
                     hintStyle: TextStyle(fontSize: 12),
@@ -126,9 +187,28 @@ class InputPage extends StatelessWidget {
                   return null;
                 },
               ),
+              Align(
+                  alignment: Alignment.bottomLeft,
+                  child: GestureDetector(
+                    child: _imageRumah == null
+                        ? Image(
+                            fit: BoxFit.cover,
+                            key: Key("foto_rumah"),
+                            width: 64,
+                            height: 64,
+                            image: AssetImage('graphics/addImage.png'),
+                          )
+                        : Image(
+                            image: FileImage(_imageRumah),
+                            width: 64,
+                            height: 64,
+                            fit: BoxFit.cover),
+                    onTap: () => choose("RUMAH"),
+                  )),
               TextFormField(
                 autocorrect: false,
                 enabled: false,
+                controller: ftRumahController,
                 decoration: InputDecoration(labelText: "Foto Rumah"),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
@@ -138,13 +218,28 @@ class InputPage extends StatelessWidget {
                   return null;
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.photo_camera),
-                onPressed: () => choose(RUMAH),
-              ),
+              Align(
+                  alignment: Alignment.bottomLeft,
+                  child: GestureDetector(
+                    child: _imageBA == null
+                        ? Image(
+                            fit: BoxFit.cover,
+                            key: Key("foto_BA"),
+                            width: 64,
+                            height: 64,
+                            image: AssetImage('graphics/addImage.png'),
+                          )
+                        : Image(
+                            image: FileImage(_imageBA),
+                            width: 64,
+                            height: 64,
+                            fit: BoxFit.cover),
+                    onTap: () => choose("BA"),
+                  )),
               TextFormField(
                 autocorrect: false,
                 enabled: false,
+                controller: ftBAController,
                 decoration: InputDecoration(labelText: "Foto BA"),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
@@ -154,14 +249,28 @@ class InputPage extends StatelessWidget {
                   return null;
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.photo_camera),
-                onPressed: () => choose(RUMAH),
-                padding: EdgeInsets.only(bottom: 0.0),
-              ),
+              Align(
+                  alignment: Alignment.bottomLeft,
+                  child: GestureDetector(
+                    child: _imageMeteran == null
+                        ? Image(
+                            fit: BoxFit.cover,
+                            key: Key("foto_meteran"),
+                            width: 64,
+                            height: 64,
+                            image: AssetImage('graphics/addImage.png'),
+                          )
+                        : Image(
+                            image: FileImage(_imageMeteran),
+                            width: 64,
+                            height: 64,
+                            fit: BoxFit.cover),
+                    onTap: () => choose("METERAN"),
+                  )),
               TextFormField(
                 autocorrect: false,
                 enabled: false,
+                controller: ftMeteranController,
                 decoration: InputDecoration(labelText: "Foto Meteran"),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
@@ -171,11 +280,24 @@ class InputPage extends StatelessWidget {
                   return null;
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.photo_camera),
-                onPressed: () => choose(RUMAH),
-                padding: EdgeInsets.only(bottom: 0.0),
-              ),
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(top: 20.0),
+                child: Center(
+                  child: FlatButton.icon(
+                    color: Colors.lightBlue,
+                    icon: Icon(Icons.save,
+                        color: Colors.white), //`Icon` to display
+                    label: Text(
+                      'Simpan',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ), //`Text` to display
+                    onPressed: () {
+                      save();
+                    },
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -216,9 +338,7 @@ class InputPage extends StatelessWidget {
             ),
             onPressed: () {
               Navigator.pop(_context);
-              getImage(ImageSource.camera).then((result) {
-                print(result.toString());
-              });
+              ambilGambar(type, ImageSource.camera);
             },
             color: Colors.lightBlue,
           ),
@@ -230,14 +350,65 @@ class InputPage extends StatelessWidget {
             // onPressed: () => Navigator.pop(_context),
             onPressed: () {
               Navigator.pop(_context);
-              getImage(ImageSource.gallery).then((result) {
-                print(result.toString());
-              });
+              ambilGambar(type, ImageSource.gallery);
             },
             color: Colors.lightBlue,
           )
         ],
       ).show();
+    }
+  }
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<String> save() async {
+    if (_imageBA == null || _imageMeteran == null || _imageRumah == null) {
+      throw ("Lengkapi foto yang diperlukan terlebih dahulu.");
+    } else {
+      //berati ini bisa
+
+      final path = await _localPath;
+      File newFileRumah =
+          await _imageRumah.copy('$path/' + ftRumahController.text + '.jpg');
+      File newFileBA =
+          await _imageBA.copy('$path/' + ftBAController.text + '.jpg');
+      File newFileMeteran = await _imageMeteran
+          .copy('$path/' + idController.text + 'meteran' + '.jpg');
+      Data d = Data(
+          nik: user.id,
+          namapelanggan: namaLengkapController.text,
+          noregsl: idController.text,
+          alamat: alamatController.text,
+          notelp: notelpController.text,
+          nometer: namaWM.text,
+          fotorumah: newFileRumah.path,
+          fotoba: newFileBA.path,
+          fotometeran: newFileMeteran.path);
+
+      DBProvider provider = DBProvider();
+      Future da = provider.newData(d);
+      da.then((onValue) {
+        Flushbar(
+          message:
+              "Informasi berhasil disimpan.",
+          icon: Icon(
+            Icons.info_outline,
+            size: 28.0,
+            color: Colors.blue[300],
+          ),
+          borderRadius: 8,
+          margin: EdgeInsets.all(8),
+          dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+          duration: Duration(seconds: 3),
+          leftBarIndicatorColor: Colors.blue[300],
+        )..show(context);
+      });
+      //final File newImage = await _imageRumah.copy('$directory/image1.jpg');
+
     }
   }
 }
