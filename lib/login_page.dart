@@ -238,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
                                         message:
                                             "Berhasil mendaftarkan pengguka",
                                         title: "Sukses",
-                                        duration: Duration(seconds: 1))
+                                        duration: Duration(seconds: 2))
                                     .show(context);
                               });
                             },
