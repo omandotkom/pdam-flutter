@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:pdam/home_page.dart';
 
@@ -5,7 +6,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'package:pdam/Database.dart';
-
+import 'package:flushbar/flushbar.dart';
 import 'package:pdam/pojo/User.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,8 +20,10 @@ User user;
 class _LoginPageState extends State<LoginPage> {
   final idController = TextEditingController(text: "user1");
   final passController = TextEditingController(text: "system3298");
+  final newIDController = TextEditingController();
+  final newPassController = TextEditingController();
   ProgressDialog pr;
-
+  final TextEditingController masterPass = TextEditingController();
   @override
   Widget build(BuildContext context) {
     DBProvider db = new DBProvider();
@@ -81,7 +84,10 @@ class _LoginPageState extends State<LoginPage> {
               // Navigator.of(context).pushNamed(HomePage.tag);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage(user: val,)),
+                MaterialPageRoute(
+                    builder: (context) => HomePage(
+                          user: val,
+                        )),
               );
             }).catchError((onError) {
               var alertStyle = AlertStyle(
@@ -128,9 +134,129 @@ class _LoginPageState extends State<LoginPage> {
         style: TextStyle(color: Colors.black54),
       ),
       onPressed: () {
-         DBProvider db = new DBProvider();
+        /*       DBProvider db = new DBProvider();
          db.newClient(User(id: "user1",
          password : "system3298"));
+    */
+        Alert(
+            style: AlertStyle(
+              animationType: AnimationType.fromBottom,
+              isCloseButton: true,
+              isOverlayTapDismiss: false,
+              descStyle: TextStyle(fontWeight: FontWeight.bold),
+              animationDuration: Duration(seconds: 1),
+              alertBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                side: BorderSide(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            context: context,
+            title: "Masukkan Master Password",
+            content: Column(
+              children: <Widget>[
+                Text(
+                  "Master Password adalah password utama yang digunakan untuk mengakses fitur pembuatan User baru pada aplikasi ini",
+                  style: TextStyle(color: Colors.black, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+                TextField(
+                  keyboardType: TextInputType.number,
+                  controller: masterPass,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.lock),
+                    labelText: 'Password',
+                  ),
+                ),
+              ],
+            ),
+            buttons: [
+              DialogButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (masterPass.text != "150498") {
+                    //passwrong
+                    FlushbarHelper.createError(
+                            title: "Gagal",
+                            message: "Master Password yang Anda Masukkan Salah",
+                            duration: Duration(seconds: 3))
+                        .show(context);
+                  } else {
+                    //pass correct
+                    Alert(
+                        style: AlertStyle(
+                          animationType: AnimationType.fromBottom,
+                          isCloseButton: true,
+                          isOverlayTapDismiss: false,
+                          descStyle: TextStyle(fontWeight: FontWeight.bold),
+                          animationDuration: Duration(seconds: 1),
+                          alertBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        context: context,
+                        title: "Pendaftaran Pengguna",
+                        content: Column(
+                          children: <Widget>[
+                            Text(
+                              'Masukkan NIK dan Password untuk Pengguna Lapangan yang Akan Menggunakan Aplikasi Ini.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            TextField(
+                              controller: newIDController,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.account_circle),
+                                labelText: 'NIK',
+                              ),
+                            ),
+                            TextField(
+                              controller: newPassController,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.lock),
+                                labelText: 'Password',
+                              ),
+                            ),
+                          ],
+                        ),
+                        buttons: [
+                          DialogButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              DBProvider db = new DBProvider();
+                              db
+                                  .newClient(User(
+                                      id: newIDController.text,
+                                      password: newPassController.text))
+                                  .then((res) {
+                                FlushbarHelper.createSuccess(
+                                        message:
+                                            "Berhasil mendaftarkan pengguka",
+                                        title: "Sukses",
+                                        duration: Duration(seconds: 1))
+                                    .show(context);
+                              });
+                            },
+                            child: Text(
+                              "DAFTARKAN",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          )
+                        ]).show();
+                  }
+                },
+                child: Text(
+                  "LANJUTKAN",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              )
+            ]).show();
       },
     );
 

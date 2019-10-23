@@ -39,7 +39,7 @@ class DBProvider {
     });
   }
 
-  newClient(User user) async {
+  Future newClient(User user) async {
     final db = await database;
     var res = await db.insert("Users", user.toJson());
     return res;
