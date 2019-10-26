@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pdam/input_page.dart';
 import 'package:pdam/pojo/User.dart';
+import 'package:pdam/view_page.dart';
 
 class HomePage extends StatelessWidget {
   static String tag = "home_page";
@@ -20,8 +21,13 @@ class HomePage extends StatelessWidget {
 
     return MaterialApp(
       title: title,
-      home: Scaffold(appBar: AppBar(title: Text("PDAM"),toolbarOpacity: 1,centerTitle: true,
-      bottomOpacity: 1,),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("PDAM"),
+          toolbarOpacity: 1,
+          centerTitle: true,
+          bottomOpacity: 1,
+        ),
         backgroundColor: Colors.white,
         body: GridView.count(
           childAspectRatio: (widthScreen / heightScreen) * 3.5,
@@ -31,13 +37,16 @@ class HomePage extends StatelessWidget {
           // Generate 100 widgets that display their index in the List.
           children: <Widget>[
             GestureDetector(
-              onTap: (){
-                  Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InputPage(user: user,)),
-              );
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => InputPage(
+                            user: user,
+                          )),
+                );
               },
-              child:  Container(
+              child: Container(
                   padding: new EdgeInsets.all(10),
                   decoration: boxDecoration(),
                   margin: new EdgeInsets.all(20),
@@ -45,9 +54,10 @@ class HomePage extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: FittedBox(
-                          fit: BoxFit.contain, // otherwise the logo will be tiny
+                          fit:
+                              BoxFit.contain, // otherwise the logo will be tiny
                           child:
-                          Icon(Icons.create, color: Colors.lightBlueAccent),
+                              Icon(Icons.create, color: Colors.lightBlueAccent),
                         ),
                       ),
                       Text('Tambah Data'),
@@ -57,7 +67,37 @@ class HomePage extends StatelessWidget {
                     ],
                   )),
             ),
-
+            GestureDetector(
+              child: Container(
+                  decoration: boxDecoration(),
+                  padding: new EdgeInsets.all(10),
+                  margin: new EdgeInsets.all(20),
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: FittedBox(
+                          fit:
+                              BoxFit.contain, // otherwise the logo will be tiny
+                          child: Icon(Icons.view_agenda,
+                              color: Colors.lightBlueAccent),
+                        ),
+                      ),
+                      Text('Lihat Data'),
+                      Text('sample deskripsi untuk melihat data',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 12)),
+                    ],
+                  )),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ViewPage(
+                            user: user,
+                          )),
+                );
+              },
+            ),
             Container(
                 decoration: boxDecoration(),
                 padding: new EdgeInsets.all(10),
@@ -67,26 +107,8 @@ class HomePage extends StatelessWidget {
                     Expanded(
                       child: FittedBox(
                         fit: BoxFit.contain, // otherwise the logo will be tiny
-                        child: Icon(Icons.view_agenda,
-                            color: Colors.lightBlueAccent),
-                      ),
-                    ),
-                    Text('Lihat Data'),
-                    Text('sample deskripsi untuk melihat data',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12)),
-                  ],
-                )),Container(
-                decoration: boxDecoration(),
-                padding: new EdgeInsets.all(10),
-                margin: new EdgeInsets.all(20),
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.contain, // otherwise the logo will be tiny
-                        child: Icon(Icons.exit_to_app,
-                            color: Colors.deepOrange),
+                        child:
+                            Icon(Icons.exit_to_app, color: Colors.deepOrange),
                       ),
                     ),
                     Text('Keluar'),
