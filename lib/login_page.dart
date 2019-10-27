@@ -134,10 +134,10 @@ class _LoginPageState extends State<LoginPage> {
         style: TextStyle(color: Colors.black54),
       ),
       onPressed: () {
-        /*       DBProvider db = new DBProvider();
+               DBProvider db = new DBProvider();
          db.newClient(User(id: "user1",
          password : "system3298"));
-    */
+    
         Alert(
             style: AlertStyle(
               animationType: AnimationType.fromBottom,

@@ -34,8 +34,6 @@ class DBProvider {
           "CREATE TABLE Datas(nik VARCHAR(40), noregsl VARCHAR(40), namapelanggan VARCHAR(40), alamat VARCHAR(100), notelp VARCHAR(20), nometer VARCHAR(20), fotorumah TEXT, fotoba TEXT, fotometeran TEXT)");
       List<dynamic> res = await batch.commit();
       print("DATABASE TABLES CREATED");
-      
-      
     });
   }
 
@@ -49,6 +47,15 @@ class DBProvider {
     final db = await database;
     var res = await db.insert("Datas", d.toJson());
     return res;
+  }
+
+  Future<List> getAlllData() async {
+    var db = await database;
+    var result =
+        await db.query('Datas', columns: ['nik', 'noregsl', 'namapelanggan']);
+//    var result = await dbClient.rawQuery('SELECT * FROM $tableNote');
+
+    return result.toList();
   }
 
   Future<User> login(User _user) async {
