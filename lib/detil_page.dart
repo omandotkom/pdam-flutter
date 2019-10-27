@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pdam/pojo/Data.dart';
@@ -218,6 +219,7 @@ class StatefulDetilPage extends State<DetilPage> {
                         padding: EdgeInsets.all(12.0),
                         color: Colors.lightBlue,
                         onPressed: () {
+                          
                           SavePDF save = SavePDF();
                           var pr = ProgressDialog(context);
                           pr = new ProgressDialog(context,
@@ -249,6 +251,8 @@ class StatefulDetilPage extends State<DetilPage> {
                               print(isHidden);
                             });
                           }).catchError((onError) {
+                            pr.hide();
+                            FlushbarHelper.createError(title: "Kesalahan",message: onError);
                             print(onError.toString());
                           });
                         },
