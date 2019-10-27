@@ -48,4 +48,7 @@ class Data {
         "fotoba" : fotoba,
         "fotometeran" : fotometeran
       };
+  String toString(){
+    return alamat;
+  }
 }

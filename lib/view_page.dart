@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pdam/Database.dart';
+import 'package:pdam/detil_page.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pdam/pojo/User.dart';
@@ -31,6 +32,9 @@ class StatefulViewPage extends State<ViewPage> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+     DeviceOrientation.portraitUp
+     ]);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       Flushbar(
           title: "Lihat Rincian",
@@ -83,8 +87,10 @@ class StatefulViewPage extends State<ViewPage> {
                           side: BorderSide(color: Colors.blueAccent)),
                       child: Column(
                         children: <Widget>[
-                          Padding(padding: EdgeInsets.only(top: 8.0),
-                          child: Text("Data oleh " + user.id),),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8.0),
+                            child: Text("Data oleh " + user.id),
+                          ),
                           ListTile(
                             title: TextFormField(
                               initialValue: '${items[position].noregsl}',
@@ -140,8 +146,17 @@ class StatefulViewPage extends State<ViewPage> {
       });
     });*/
   }
-  void _navigateToNote(BuildContext context, Data note) async {
-    print(note.noregsl);
+  void _navigateToNote(BuildContext context, Data data) async {
+    db.getCompleteData(data).then((onValue) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => DetilPage(
+                  data: onValue,
+                )),
+      );
+    });
+
     /* String result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => NoteScreen(note)),
@@ -158,22 +173,4 @@ class StatefulViewPage extends State<ViewPage> {
       });
     }*/
   }
-}
-
-// The base class for the different types of items the list can contain.
-abstract class ListItem {}
-
-// A ListItem that contains data to display a heading.
-class HeadingItem implements ListItem {
-  final String heading;
-
-  HeadingItem(this.heading);
-}
-
-// A ListItem that contains data to display a message.
-class MessageItem implements ListItem {
-  final String sender;
-  final String body;
-
-  MessageItem(this.sender, this.body);
 }

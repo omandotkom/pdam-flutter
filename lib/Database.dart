@@ -58,6 +58,13 @@ class DBProvider {
     return result.toList();
   }
 
+  Future<Data> getCompleteData(Data d) async {
+    var db = await database;
+   
+   var res =await  db.query("Datas", where: "noregsl = ?", whereArgs: [d.noregsl]);
+    return res.isNotEmpty ? Data.fromJson(res.first) : Null ;
+  }
+
   Future<User> login(User _user) async {
     final db = await database;
     var res = await db.query("Users",
