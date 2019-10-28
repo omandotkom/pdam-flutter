@@ -244,7 +244,8 @@ class StatefulDetilPage extends State<DetilPage> {
                                   color: Colors.black,
                                   fontSize: 19.0,
                                   fontWeight: FontWeight.w600));
-                          pr.show();
+                         pr.show();
+                         
                           save.save(fetchedData).then((onValue) {
                             pr.hide().then((isHidden) {
                               save.share(onValue.path);

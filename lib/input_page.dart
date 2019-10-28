@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:image/image.dart' as gambar;
 import 'package:pdam/Database.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:image_picker/image_picker.dart';
@@ -378,15 +379,18 @@ class StatefulInputPage extends State<InputPage> {
       //berati ini bisa
 
       final path = await _localPath;
-      String rumahNewPath = '$path/' + ftRumahController.text + 'compress.jpg';
-      String baNewPath = '$path/' + ftBAController.text + 'compress.jpg';
-      String meteranNewPath = '$path/' + idController.text + 'meteran' + 'compress.jpg';  
-      File newFileRumah =
+      
+      
+      File newFileRumah = 
           await _imageRumah.copy('$path/' + ftRumahController.text + '.jpg');
-      File newFileBA =
+           _imageRumah.deleteSync();
+      File newFileBA = 
           await _imageBA.copy('$path/' + ftBAController.text + '.jpg');
+           _imageBA.deleteSync();
       File newFileMeteran = await _imageMeteran
           .copy('$path/' + idController.text + 'meteran' + '.jpg');
+          _imageMeteran.deleteSync();
+          
           testCompressAndGetFile(newFileRumah, newFileRumah.path);
           testCompressAndGetFile(newFileBA, newFileBA.path);
           testCompressAndGetFile(newFileMeteran, newFileMeteran.path);
