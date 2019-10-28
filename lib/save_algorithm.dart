@@ -6,9 +6,10 @@ import 'package:pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:typed_data';
 import 'package:image/image.dart' as s;
-
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 class SavePDF {
+    
   Future<File> save(Data data) async {
     if (data == null) {
       throw ("Data is empty!");

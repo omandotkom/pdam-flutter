@@ -9,7 +9,7 @@ import 'package:pdam/pojo/User.dart';
 import 'package:pdam/pojo/Data.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flushbar/flushbar.dart';
-
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 class InputPage extends StatefulWidget {
   final User user;
   InputPage({this.user});
@@ -45,9 +45,9 @@ class StatefulInputPage extends State<InputPage> {
       if (_imageBA != null) ftBAController.text = "BA" + idController.text;
     });
   }
-
   Future getImageMeteran(ImageSource img) async {
     var image = await ImagePicker.pickImage(source: img);
+     
     setState(() {
       _imageMeteran = image;
       if (_imageMeteran != null)
@@ -304,7 +304,6 @@ class StatefulInputPage extends State<InputPage> {
       ),
     );
   }
-
   Future choose(String type) async {
     if (idController.text.isEmpty) {
       Alert(
@@ -358,7 +357,14 @@ class StatefulInputPage extends State<InputPage> {
       ).show();
     }
   }
-
+   Future<File> testCompressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path, targetPath,
+        quality: 88,
+        rotate: 180,
+      );
+   return result;
+   }
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
@@ -372,12 +378,19 @@ class StatefulInputPage extends State<InputPage> {
       //berati ini bisa
 
       final path = await _localPath;
+      String rumahNewPath = '$path/' + ftRumahController.text + 'compress.jpg';
+      String baNewPath = '$path/' + ftBAController.text + 'compress.jpg';
+      String meteranNewPath = '$path/' + idController.text + 'meteran' + 'compress.jpg';  
       File newFileRumah =
           await _imageRumah.copy('$path/' + ftRumahController.text + '.jpg');
       File newFileBA =
           await _imageBA.copy('$path/' + ftBAController.text + '.jpg');
       File newFileMeteran = await _imageMeteran
           .copy('$path/' + idController.text + 'meteran' + '.jpg');
+          testCompressAndGetFile(newFileRumah, newFileRumah.path);
+          testCompressAndGetFile(newFileBA, newFileBA.path);
+          testCompressAndGetFile(newFileMeteran, newFileMeteran.path);
+
       Data d = Data(
           nik: user.id,
           namapelanggan: namaLengkapController.text,
