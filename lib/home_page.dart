@@ -3,7 +3,8 @@ import 'package:flutter/rendering.dart';
 import 'package:pdam/input_page.dart';
 import 'package:pdam/pojo/User.dart';
 import 'package:pdam/view_page.dart';
-
+import 'package:flutter/services.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 class HomePage extends StatelessWidget {
   static String tag = "home_page";
   final User user;
@@ -98,7 +99,7 @@ class HomePage extends StatelessWidget {
                 );
               },
             ),
-            Container(
+            GestureDetector(child:Container(
                 decoration: boxDecoration(),
                 padding: new EdgeInsets.all(10),
                 margin: new EdgeInsets.all(20),
@@ -116,13 +117,44 @@ class HomePage extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 12)),
                   ],
-                ))
+                )) ,
+                onTap: (){
+                  Alert(
+      context: context,
+      type: AlertType.warning,
+      title: "Menutup Aplikasi",
+      desc: "Apa anda yakin ingin menutup aplikasi ini ?",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Keluar",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: (){
+Navigator.pop(context);
+pop();
+          } ,
+          ),
+        DialogButton(
+          child: Text(
+            "Batal",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          
+        )
+      ],
+    ).show();
+                },)
+            
           ],
         ),
       ),
     );
   }
-
+static Future<void> pop() async {
+  await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
+}
   BoxDecoration boxDecoration() {
     return BoxDecoration(
       border: Border.all(color: Colors.lightBlue, width: 0.8),

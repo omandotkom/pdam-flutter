@@ -29,7 +29,8 @@ dependencies:
   pdf :
   esys_flutter_share :
   image :
-  progress_dialog :  
+  progress_dialog :
+  flutter_image_compress :  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
