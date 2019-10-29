@@ -218,34 +218,21 @@ class StatefulDetilPage extends State<DetilPage> {
                         icon: Icon(Icons.save),
                         padding: EdgeInsets.all(12.0),
                         color: Colors.lightBlue,
-                        onPressed: () {
-                          
-                          SavePDF save = SavePDF();
-                          var pr = ProgressDialog(context);
-                          pr = new ProgressDialog(context,
-                              type: ProgressDialogType.Normal,
-                              isDismissible: false,
-                              showLogs: false);
-
-                          pr.style(
-                              message: 'Downloading file...',
-                              borderRadius: 10.0,
-                              backgroundColor: Colors.white,
-                              progressWidget: CircularProgressIndicator(),
-                              elevation: 10.0,
-                              insetAnimCurve: Curves.easeInOut,
-                              progress: 0.0,
-                              maxProgress: 100.0,
-                              progressTextStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.w400),
-                              messageTextStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 19.0,
-                                  fontWeight: FontWeight.w600));
-                         pr.show();
-                         
+                        onPressed: () async {
+                           showDialog(context);
+                           SavePDF save = SavePDF(fetchedData);
+                          save.save().then((onValue){
+                              if (pr!=null){
+                                pr.hide().then((isHidden){
+                                  save.share(onValue.path);
+                                });
+                              }
+                            }).catchError((onError){
+                              pr.hide();
+                              FlushbarHelper.createError(title: "Kesalahan", message: onError.toString());
+                            });   
+                          /* SavePDF save = SavePDF();
+                          showDialog(context)
                           save.save(fetchedData).then((onValue) {
                             pr.hide().then((isHidden) {
                               save.share(onValue.path);
@@ -255,7 +242,7 @@ class StatefulDetilPage extends State<DetilPage> {
                             pr.hide();
                             FlushbarHelper.createError(title: "Kesalahan",message: onError);
                             print(onError.toString());
-                          });
+                          });*/
                         },
                       ),
                     ),
@@ -263,5 +250,25 @@ class StatefulDetilPage extends State<DetilPage> {
                 ],
               ),
             )));
+  }
+var pr;
+  showDialog(BuildContext context)  {
+   pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+
+    pr.style(
+        message: 'Downloading file...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        maxProgress: 100.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
+    pr.show();
   }
 }

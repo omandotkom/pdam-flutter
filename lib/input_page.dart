@@ -10,7 +10,7 @@ import 'package:pdam/pojo/User.dart';
 import 'package:pdam/pojo/Data.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:permission_handler/permission_handler.dart';
 class InputPage extends StatefulWidget {
   final User user;
   InputPage({this.user});
@@ -358,19 +358,22 @@ class StatefulInputPage extends State<InputPage> {
       ).show();
     }
   }
-   Future<File> testCompressAndGetFile(File file, String targetPath) async {
-    var result = await FlutterImageCompress.compressAndGetFile(
-        file.absolute.path, targetPath,
-        quality: 88,
-        rotate: 180,
-      );
-   return result;
-   }
+   
+   Future<String> get _requestExternalStorageDirectory async{
+      final List<PermissionGroup> permissions = <PermissionGroup>[PermissionGroup.storage];
+     final Map<PermissionGroup, PermissionStatus>permissionRequestResult = await PermissionHandler().requestPermissions(permissions);
+    final directory = await getExternalStorageDirectory();
+    final newDir = directory.path + "/" + idController.text;
+    Directory dir = new Directory(newDir);
+    dir.createSync();
+    return dir.path;
+  }
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
     return directory.path;
   }
+  
 
   Future<String> save() async {
     if (_imageBA == null || _imageMeteran == null || _imageRumah == null) {
@@ -378,22 +381,23 @@ class StatefulInputPage extends State<InputPage> {
     } else {
       //berati ini bisa
 
-      final path = await _localPath;
-      
+      //final path = await _localPath;
+      final path = await _requestExternalStorageDirectory;
       
       File newFileRumah = 
           await _imageRumah.copy('$path/' + ftRumahController.text + '.jpg');
-           _imageRumah.deleteSync();
+          print(newFileRumah.path);
+           //_imageRumah.deleteSync();
       File newFileBA = 
           await _imageBA.copy('$path/' + ftBAController.text + '.jpg');
-           _imageBA.deleteSync();
+           //_imageBA.deleteSync();
       File newFileMeteran = await _imageMeteran
           .copy('$path/' + idController.text + 'meteran' + '.jpg');
-          _imageMeteran.deleteSync();
+         // _imageMeteran.deleteSync();
           
-          testCompressAndGetFile(newFileRumah, newFileRumah.path);
-          testCompressAndGetFile(newFileBA, newFileBA.path);
-          testCompressAndGetFile(newFileMeteran, newFileMeteran.path);
+          //testCompressAndGetFile(newFileRumah, newFileRumah.path);
+          //testCompressAndGetFile(newFileBA, newFileBA.path);
+          //testCompressAndGetFile(newFileMeteran, newFileMeteran.path);
 
       Data d = Data(
           nik: user.id,
